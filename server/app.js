@@ -25,6 +25,14 @@ app.use('/v1/order',orderRoutes)
 // category
 app.use('/v1/category',categoryRoutes)
 
+app.get('/',(req,res)=>{
+    res.status(200).send({
+        success:true,
+        message:"Success"
+    })
+
+})
+
 //jwt token creation
 app.get('/token',(req,res)=>{
     var token = jwt.sign({ foo: 'bar' }, SECRET_KEY);
@@ -35,6 +43,7 @@ app.get('/token',(req,res)=>{
     })
 
 })
+
 
 
 
