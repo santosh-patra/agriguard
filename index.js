@@ -1,6 +1,8 @@
 import app from "./server/app.js";
 import sequelize from './config/mysqlconfig.js';
-const PORT = 8080;
+import { config } from 'dotenv';
+config();
+const PORT = process.env.PORT || 8080;
 
 // sequelize.sync()
     // .then(() => {
