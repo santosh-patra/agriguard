@@ -1,69 +1,74 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/mysqlconfig.js';
-import Category from './categorySchema.js';
 
-const Product = sequelize.define('Product', {
+const Farmer = sequelize.define('Farmer', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    product_name: {
+    farmer_id: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    short_description: {
+    first_name: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    long_description: {
+    last_name: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    regular_price: {
+    middle_name: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    sale_price: {
+    mobile_no: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    sku_code: {
+    email_id: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    stock_status: {
+    photo: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    stock_qty: {
+    age: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    tax_category: {
+    gender: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    delivery_charges: {
+    address: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    prod_attribute: {
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        allowNull: false
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        allowNull: false
+    },
+    crop_insured: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    product_single_image: {
-        type: DataTypes.TEXT('long'),
-        allowNull: true
-    },
-    product_multiple_image: {
-        type: DataTypes.TEXT('long'),
+    farm_details: {
+        type: DataTypes.STRING,
         allowNull: true
     }
+},{
+    timestamps: true  // This is the default setting, so you can omit it if not overriding
 });
 
-// Define the relationship
-Product.belongsTo(Category);
-Category.hasMany(Product);
 
-export default Product;
+
+export default Farmer;

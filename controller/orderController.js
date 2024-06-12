@@ -1,4 +1,5 @@
-import { addNewOrderModel, deleteOrderModel, fetchAllOrderModel, fetchSingleOrderModel } from "../model/model.js";
+import { errorResponse } from "../config/errorResponse.js";
+import { addNewOrderModel, deleteOrderModel, fetchAllOrderModel, fetchSingleOrderModel, totalOrderCountModel, updateOrderModel } from "../model/model.js";
 
 export const fetchAllOrderController = async (req, res) => {
     try {
@@ -27,6 +28,39 @@ export const fetchAllOrderController = async (req, res) => {
             error:errorResponse(1,error.message,error)
         })
     } 
+}
+
+export const totalOrderCountController = async(req,res)=>{
+    try {
+        console.log("Request body received in totalOrderCountController --->",req.body);
+        let response = await totalOrderCountModel(req.body);
+        
+        console.log("Total Order Response--->",response);
+        if(response.success){
+            console.log(`Fetching total Order`)
+            res.status(200).send({
+                success:true,
+                message:response.message,
+                data:response.data
+            })
+        }
+        else{
+            console.log("Some Error occured in totalOrderCountController--->",response)
+            res.status(200).send({
+                success:false,
+                message:response.message,
+                error:response.error
+            })
+        }
+        
+    } catch (error) {
+        console.log("Error occured in totalOrderCountController--->",error)
+        res.status(200).send({
+            success:false,
+            message:"Something Went Wrong... Please try again",
+            error:errorResponse(1,error.message,error)
+        })
+    }
 }
 
 export const fetchSingleOrderController = async (req, res) => {
@@ -64,6 +98,8 @@ export const fetchSingleOrderController = async (req, res) => {
 export const addNewOrderController = async(req,res)=>{
     try {
         console.log("Request body received in addNewOrderController --->",req.body);
+        let order_id = `AGR${Date.now()}${Math.floor(Math.random() * 10)}`;
+        req.body.order_id = order_id;
         let response = await addNewOrderModel(req.body);
         
         console.log("Add Order Response--->",response);
@@ -85,6 +121,40 @@ export const addNewOrderController = async(req,res)=>{
         
     } catch (error) {
         console.log("Error occured in addNewOrderController--->",error)
+        res.status(200).send({
+            success:false,
+            message:"Something Went Wrong... Please try again",
+            error:errorResponse(1,error.message,error)
+        })
+    }
+}
+
+export const updateOrderController = async(req,res)=>{
+    try {
+        console.log("Request body received in updateOrderController --->",req.body);
+        let id = req.params.id;
+        req.body.id = id;
+        let response = await updateOrderModel(req.body);
+        
+        console.log("Update Order Response--->",response);
+        if(response.success){
+            res.status(200).send({
+                success:true,
+                message:response.message,
+                data:response.data
+            })
+        }
+        else{
+            console.log("Some Error occured in updateOrderController--->",response)
+            res.status(200).send({
+                success:false,
+                message:response.message,
+                error:response.error
+            })
+        }
+        
+    } catch (error) {
+        console.log("Error occured in updateOrderController--->",error)
         res.status(200).send({
             success:false,
             message:"Something Went Wrong... Please try again",

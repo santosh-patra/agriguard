@@ -3,6 +3,7 @@ import cors from 'cors';
 import path from 'path';
 const app = express();
 import { fileURLToPath } from 'url';
+import loginRoutes from '../routes/loginRoutes.js';
 import productRoutes from '../routes/productroutes.js';
 import farmerRoutes from '../routes/farmerRoutes.js'
 import orderRoutes from '../routes/orderRoutes.js'
@@ -16,6 +17,8 @@ app.use(express.json());
 app.use(cors())
 // console.log("dhgcdhc--->",path.join(__dirname,'../controller/qr-images'));
 // console.log("dhgcdhc--->",path.basename(__filename));
+// login routes
+app.use('/v1/signin',loginRoutes)
 // product routes
 app.use('/v1/product',productRoutes)
 // farmer routes
@@ -43,6 +46,19 @@ app.get('/token',(req,res)=>{
     })
 
 })
+
+app.use((req, res, next) => {
+    console.log("Yoh have entered the wrong Url......Please Check and try with correct URL");
+    const err = new Error("Not Found");
+    err.status = 404;
+    return res.status(err.status).json({
+      success: false,
+      message: "Oops!! It seems that the URL might be incorrect..Please Check the Method, Endpoint and try Again",
+      data:{
+        url:  req.originalUrl
+      }
+    });
+  });
 
 
 
