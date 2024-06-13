@@ -4,8 +4,8 @@ import { config } from 'dotenv';
 config();
 const PORT = process.env.PORT || 8080;
 
-// sequelize.sync({ alter: true })
-sequelize.sync({force:true})
+sequelize.sync({ alter: true })
+// sequelize.sync({force:true})
 // sequelize.sync()
     .then(() => {
         app.listen(PORT,()=>{
