@@ -27,6 +27,7 @@ import { Sequelize } from 'sequelize';
 import { config } from 'dotenv';
 config();
 // for local user connect
+
 // const sequelize = new Sequelize(`mydb`, `root`, `admin`, {
 //     host: `localhost`,
 //     dialect: 'mysql'

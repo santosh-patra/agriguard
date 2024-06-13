@@ -1,10 +1,11 @@
 import { Sequelize } from "sequelize";
 import { errorResponse } from "../config/errorResponse.js";
-import Category from "../schema/categorySchema.js";
+// import Category from "../schema/categorySchema.js";
 import Farmer from "../schema/farmerSchema.js";
-import Orders from "../schema/orderSchema.js";
-import Product from "../schema/productSchema.js";
-import User from "../schema/loginSchema.js";
+// import Orders from "../schema/orderSchema.js";
+// import Product from "../schema/productSchema.js";
+// import User from "../schema/loginSchema.js";
+// import Attribute from "../schema/attributeSchema.js";
 
 
 
@@ -347,7 +348,7 @@ export const updateProductModel = async (fields) => {
 
     try {
         let existingProduct = await Product.findByPk(fields.id,{
-            attributes: { exclude: ['product_single_image','product_multiple_image'] }
+            // attributes: { exclude: ['product_single_image','product_multiple_image'] }
         });
         console.log("existingProduct Result--->",existingProduct.dataValues)
         if(existingProduct){
@@ -368,12 +369,12 @@ export const updateProductModel = async (fields) => {
             updateObj.CategoryId = fields.CategoryId ? fields.CategoryId : existingProduct.CategoryId
             
             let updateRes = await existingProduct.update(updateObj);
-            if(updateRes.dataValues.product_single_image){
-                delete updateRes.dataValues.product_single_image;
-            }
-            if(updateRes.dataValues.product_multiple_image){
-                delete updateRes.dataValues.product_single_image;
-            }
+            // if(updateRes.dataValues.product_single_image){
+            //     delete updateRes.dataValues.product_single_image;
+            // }
+            // if(updateRes.dataValues.product_multiple_image){
+            //     delete updateRes.dataValues.product_single_image;
+            // }
             return ({
                 success: true,
                 message: "Product updated Successfully",
@@ -481,9 +482,18 @@ export const totalFarmerCountModel = async(fields)=>{
 export const fetchSingleFarmerModel = async (fields) => {
     console.log("Data received in fetchSingleFarmerModel --->", fields);
     try {
-        let result = await Farmer.findOne({ where: { id:fields.id } });
+        let result = await Farmer.findOne({ where: { farmer_id:fields.id } });
         console.log("Fetch Single farmer result--->",result);
         if (result) {
+            if(result.dataValues.address){
+                result.dataValues.address = JSON.parse(result.dataValues.address);
+            }
+            if(result.dataValues.crop_insured){
+                result.dataValues.crop_insured = JSON.parse(result.dataValues.crop_insured);
+            }
+            if(result.dataValues.farm_details){
+                result.dataValues.farm_details = JSON.parse(result.dataValues.farm_details);
+            }
             return ({
                 success: true,
                 message: "Farmer Details fetch Successfully",
@@ -513,13 +523,37 @@ export const addNewFarmerModel = async (fields) => {
     console.log("Data received in fetchAllFarmerModel --->", fields);
 
     try {
+        if(fields.address){
+            let address = JSON.stringify(fields.address)
+            fields.address = address;
+        }
+        if(fields.crop_insured){
+            let crop_insured = JSON.stringify(fields.crop_insured)
+            fields.crop_insured = crop_insured;
+        }
+        if(fields.farm_details){
+            let farm_details = JSON.stringify(fields.farm_details)
+            fields.farm_details = farm_details;
+        }
         let result = await Farmer.create(fields);
         console.log("create Farmer result--->",result)
         if(result.uniqno == 1){
+            if(result.dataValues.address){
+                let address = JSON.parse(result.dataValues.address)
+                result.dataValues.address = address;
+            }
+            if(result.dataValues.crop_insured){
+                let crop_insured = JSON.parse(result.dataValues.crop_insured)
+                result.dataValues.crop_insured = crop_insured;
+            }
+            if(result.dataValues.farm_details){
+                let farm_details = JSON.parse(result.dataValues.farm_details)
+                result.dataValues.farm_details = farm_details;
+            }
             return ({
                 success: true,
                 message: "A New Farmer has been created Successfully",
-                data: result
+                data: result.dataValues
             })
         }
         else{
@@ -545,24 +579,32 @@ export const updateFarmerModel = async (fields) => {
     console.log("Data received in updateFarmerModel --->", fields);
 
     try {
-        let existingFarmer = await Farmer.findByPk(fields.id);
+        let existingFarmer = await Farmer.findOne({ where: { farmer_id:fields.id } });
         console.log("existingFarmer Result--->",existingFarmer)
         if(existingFarmer){
             let updateObj = {};
-            updateObj.farmer_id = fields.farmer_id ? fields.farmer_id : existingFarmer.farmer_id
             updateObj.first_name = fields.first_name ? fields.first_name : existingFarmer.first_name
             updateObj.last_name = fields.last_name ? fields.last_name : existingFarmer.last_name
             updateObj.middle_name = fields.middle_name ? fields.middle_name : existingFarmer.middle_name
             updateObj.mobile_no = fields.mobile_no ? fields.mobile_no : existingFarmer.mobile_no
             updateObj.email_id = fields.email_id ? fields.email_id : existingFarmer.email_id
-            updateObj.photo = fields.photo ? fields.photo : existingFarmer.photo
+            updateObj.photo = fields.photo ? JSON.stringify(fields.photo) : existingFarmer.photo
             updateObj.age = fields.age ? fields.age : existingFarmer.age
             updateObj.gender = fields.gender ? fields.gender : existingFarmer.gender
-            updateObj.address = fields.address ? fields.address : existingFarmer.address
-            updateObj.crop_insured = fields.crop_insured ? fields.crop_insured : existingFarmer.crop_insured
-            updateObj.farm_details = fields.farm_details ? fields.farm_details : existingFarmer.farm_details
+            updateObj.address = fields.address ? JSON.stringify(fields.address) : existingFarmer.address
+            updateObj.crop_insured = fields.crop_insured ? JSON.stringify(fields.crop_insured) : existingFarmer.crop_insured
+            updateObj.farm_details = fields.farm_details ? JSON.stringify(fields.farm_details) : existingFarmer.farm_details
             
             let updateRes = await existingFarmer.update(updateObj);
+            if(updateRes.dataValues.address){
+                updateRes.dataValues.address = JSON.parse(updateRes.dataValues.address)
+            }
+            if(updateRes.dataValues.crop_insured){
+                updateRes.dataValues.crop_insured = JSON.parse(updateRes.dataValues.crop_insured)
+            }
+            if(updateRes.dataValues.farm_details){
+                updateRes.dataValues.farm_details = JSON.parse(updateRes.dataValues.farm_details)
+            }
             return ({
                 success: true,
                 message: "Farmer updated Successfully",
@@ -592,7 +634,7 @@ export const deleteFarmerModel = async (fields) => {
     try {
         // check the Farmer is exist or not
         let id = fields.id;
-        const result = await Farmer.findByPk(id);
+        const result = await Farmer.findOne({ where: { farmer_id:fields.id } });
         console.log("Farmer Result--->",result)
         if(result){
             let deleteRes = await result.destroy();
@@ -976,4 +1018,161 @@ export const deleteCategoryModel = async (fields) => {
     }
 }
 
+
+// attribute
+export const fetchAllAttributeModel = async (fields) => {
+    console.log("Data received in fetchAllAttributeModel --->", fields);
+    try {
+        let result = await Attribute.findAll();
+        if (result.length > 0) {
+            return ({
+                success: true,
+                message: "Attributes Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchAllCategoriesModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const fetchSingleAttributeModel = async (fields) => {
+    console.log("Data received in fetchSingleAttributeModel --->", fields);
+    try {
+        // let fetchSingleAttributeSql = `Select * from categories where id=${fields.id};`
+        let result = await Attribute.findOne({ where: { id:fields.id } });
+        console.log("Fetch Single Attributes result--->",result);
+        if (result) {
+            return ({
+                success: true,
+                message: "Attributes Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchAllAttributesModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const addNewAttributeModel = async (fields) => {
+    console.log("Data received in addNewAttributeModel --->", fields);
+
+    try {
+        let result = await Attribute.create(fields);
+        console.log("create Attribute result--->",result)
+        if(result.uniqno == 1){
+            return ({
+                success: true,
+                message: "A New Attribute has been created Successfully",
+                data: result.dataValues
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Something Went Wrong...Please try again",
+                error: errorResponse(1, 'Unable to Add Attributes Details', result)
+            })
+        }
+    } catch (error) {
+        console.log("error occured in addNewAttribute Model--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const updateAttributeModel = async (fields) => {
+    try {
+        let id = fields.id;
+        const result = await Attribute.findByPk(id);
+        console.log("resultresultresult--->",result)
+        if(result){
+            let updateRes = await result.update({name:fields.name || result.dataValues.name, value:fields.value || result.dataValues.value})
+
+            return ({
+                success: true,
+                message: "Attribute updated Successfully",
+                data: updateRes
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail !! No Attribute Found",
+                error: errorResponse(1, 'Unable to Update Attribute Details', result)
+            })
+        }
+
+    } catch (error) {
+        console.log("error occured in updateAttribute Model--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const deleteAttributeModel = async (fields) => {
+    try {
+        // check the ctageory is exist or not
+        let id = fields.id;
+        const result = await Attribute.findByPk(id);
+        console.log("resultresultresult--->",result)
+        if(result){
+            let deleteRes = await result.destroy();
+            return ({
+                success: true,
+                message: "Attribute Deleted Successfully",
+                data: []
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail !! No Attribute Found",
+                error: errorResponse(1, 'Unable to delete Attribute Details', result)
+            })
+        }
+
+    } catch (error) {
+        console.log("error occured in deleteAttributeModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
 

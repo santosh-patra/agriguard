@@ -8,27 +8,31 @@ const User = sequelize.define('User', {
     },
     name: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     category: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     mobile_no: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     district: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     state: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     email_id: {
         type: DataTypes.STRING,
-        allowNull: true,
         unique: true
     },
     password: {

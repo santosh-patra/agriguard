@@ -8,6 +8,7 @@ import productRoutes from '../routes/productroutes.js';
 import farmerRoutes from '../routes/farmerRoutes.js'
 import orderRoutes from '../routes/orderRoutes.js'
 import categoryRoutes from '../routes/categoryRoutes.js'
+import attributeRoutes from '../routes/attributeRoutes.js'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import jwt from 'jsonwebtoken'
@@ -27,6 +28,8 @@ app.use('/v1/farmer',farmerRoutes)
 app.use('/v1/order',orderRoutes)
 // category
 app.use('/v1/category',categoryRoutes)
+// attribute
+app.use('/v1/attribute',attributeRoutes)
 
 app.get('/',(req,res)=>{
     res.status(200).send({

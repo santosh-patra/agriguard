@@ -14,50 +14,62 @@ const Product = sequelize.define('Product', {
     },
     short_description: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     long_description: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     regular_price: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     sale_price: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     sku_code: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     stock_status: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     stock_qty: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     tax_category: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     delivery_charges: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     prod_attribute: {
         type: DataTypes.STRING,
+        defaultValue: null,
         allowNull: true
     },
     product_single_image: {
         type: DataTypes.TEXT('long'),
+        defaultValue: null,
         allowNull: true
     },
     product_multiple_image: {
         type: DataTypes.TEXT('long'),
+        defaultValue: null,
         allowNull: true
     }
 });

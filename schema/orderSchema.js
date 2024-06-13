@@ -13,35 +13,42 @@ const Orders = sequelize.define('Orders', {
     },
     category_id:{
         type: DataTypes.INTEGER,
-        allowNull: false
+        defaultValue: null,
+        allowNull: true
     },
     order_id: {
         type: DataTypes.STRING,
-        allowNull: false
+        defaultValue: null,
+        allowNull: true
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        defaultValue: null,
+        allowNull: true
     },
     qty: {
         type: DataTypes.STRING,
-        allowNull: false
+        defaultValue: null,
+        allowNull: true
     },
     price: {
         type: DataTypes.STRING,
-        allowNull: false
+        defaultValue: null,
+        allowNull: true
     },
     order_status: {
         type: DataTypes.STRING,
-        allowNull: false
+        defaultValue: null,
+        allowNull: true
     },
     date_of_order: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     payment_status: {
         type: DataTypes.STRING,
-        allowNull: false
+        defaultValue: null,
+        allowNull: true
     },
     createdAt: {
         type: DataTypes.DATE,
