@@ -1,11 +1,11 @@
 import { Sequelize } from "sequelize";
 import { errorResponse } from "../config/errorResponse.js";
-// import Category from "../schema/categorySchema.js";
+import Category from "../schema/categorySchema.js";
 import Farmer from "../schema/farmerSchema.js";
-// import Orders from "../schema/orderSchema.js";
-// import Product from "../schema/productSchema.js";
-// import User from "../schema/loginSchema.js";
-// import Attribute from "../schema/attributeSchema.js";
+import Orders from "../schema/orderSchema.js";
+import Product from "../schema/productSchema.js";
+import User from "../schema/loginSchema.js";
+import Attribute from "../schema/attributeSchema.js";
 
 
 
