@@ -18,7 +18,7 @@ const Product = sequelize.define('Product', {
         allowNull: true
     },
     long_description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT('long'),
         defaultValue: null,
         allowNull: true
     },
@@ -58,7 +58,7 @@ const Product = sequelize.define('Product', {
         allowNull: true
     },
     prod_attribute: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT('long'),
         defaultValue: null,
         allowNull: true
     },

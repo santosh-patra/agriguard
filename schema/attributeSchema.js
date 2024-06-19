@@ -8,11 +8,23 @@ const Attribute = sequelize.define('Attribute', {
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        defaultValue:null,
+        allowNull: true
     },
     value: {
         type: DataTypes.STRING,
-        allowNull: false
+        defaultValue:null,
+        allowNull: true
+    },
+    regular_price: {
+        type: DataTypes.STRING,
+        defaultValue:null,
+        allowNull: true
+    },
+    sale_price: {
+        type: DataTypes.STRING,
+        defaultValue:null,
+        allowNull: true
     },
     createdAt: {
         type: DataTypes.DATE,

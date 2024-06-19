@@ -243,13 +243,28 @@ export const addNewProductModel = async (fields) => {
             let multiImageString = JSON.stringify(fields.product_multiple_image)
             fields.product_multiple_image = multiImageString;
         }
+        if(fields.long_description){
+            fields.long_description = JSON.stringify(fields.long_description);
+        }
+        if(fields.prod_attribute){
+            fields.prod_attribute = JSON.stringify(fields.prod_attribute);
+        }
         let result = await Product.create(fields);
         console.log("create Product result--->",result)
         if(result.uniqno == 1){
+            if(result.dataValues.product_multiple_image){
+                result.dataValues.product_multiple_image = JSON.parse(result.dataValues.product_multiple_image)
+            } 
+            if(result.dataValues.long_description){
+                result.dataValues.long_description = JSON.parse(result.dataValues.long_description)
+            } 
+            if(result.dataValues.prod_attribute){
+                result.dataValues.prod_attribute = JSON.parse(result.dataValues.prod_attribute)
+            } 
             return ({
                 success: true,
                 message: "A New Product has been created Successfully",
-                data: result
+                data: result.dataValues
             })
         }
         else{
@@ -350,12 +365,12 @@ export const updateProductModel = async (fields) => {
         let existingProduct = await Product.findByPk(fields.id,{
             // attributes: { exclude: ['product_single_image','product_multiple_image'] }
         });
-        console.log("existingProduct Result--->",existingProduct.dataValues)
         if(existingProduct){
+            console.log("existingProduct Result--->",existingProduct.dataValues)
             let updateObj = {};
             updateObj.product_name = fields.product_name ? fields.product_name : existingProduct.product_name
             updateObj.short_description = fields.short_description ? fields.short_description : existingProduct.short_description
-            updateObj.long_description = fields.long_description ? fields.long_description : existingProduct.long_description
+            updateObj.long_description = fields.long_description ? JSON.stringify(fields.long_description) : existingProduct.long_description
             updateObj.regular_price = fields.regular_price ? fields.regular_price : existingProduct.regular_price
             updateObj.sale_price = fields.sale_price ? fields.sale_price : existingProduct.sale_price
             updateObj.sku_code = fields.sku_code ? fields.sku_code : existingProduct.sku_code
@@ -363,7 +378,7 @@ export const updateProductModel = async (fields) => {
             updateObj.stock_qty = fields.stock_qty ? fields.stock_qty : existingProduct.stock_qty
             updateObj.tax_category = fields.tax_category ? fields.tax_category : existingProduct.tax_category
             updateObj.delivery_charges = fields.delivery_charges ? fields.delivery_charges : existingProduct.delivery_charges
-            updateObj.prod_attribute = fields.prod_attribute ? fields.prod_attribute : existingProduct.prod_attribute
+            updateObj.prod_attribute = fields.prod_attribute ? JSON.stringify(fields.prod_attribute) : existingProduct.prod_attribute
             updateObj.product_single_image = fields.product_single_image ? fields.product_single_image : existingProduct.product_single_image
             updateObj.product_multiple_image = fields.product_multiple_image ? JSON.stringify(fields.product_multiple_image) : existingProduct.product_multiple_image
             updateObj.CategoryId = fields.CategoryId ? fields.CategoryId : existingProduct.CategoryId
@@ -375,6 +390,15 @@ export const updateProductModel = async (fields) => {
             // if(updateRes.dataValues.product_multiple_image){
             //     delete updateRes.dataValues.product_single_image;
             // }
+            if(updateRes.dataValues.product_multiple_image){
+                updateRes.dataValues.product_multiple_image = JSON.parse(updateRes.dataValues.product_multiple_image)
+            } 
+            if(updateRes.dataValues.long_description){
+                updateRes.dataValues.long_description = JSON.parse(updateRes.dataValues.long_description)
+            } 
+            if(updateRes.dataValues.prod_attribute){
+                updateRes.dataValues.prod_attribute = JSON.parse(updateRes.dataValues.prod_attribute)
+            } 
             return ({
                 success: true,
                 message: "Product updated Successfully",
@@ -1118,12 +1142,17 @@ export const updateAttributeModel = async (fields) => {
         const result = await Attribute.findByPk(id);
         console.log("resultresultresult--->",result)
         if(result){
-            let updateRes = await result.update({name:fields.name || result.dataValues.name, value:fields.value || result.dataValues.value})
+            let updateRes = await result.update({
+                name:fields.name ? fields.name : result.dataValues.name, 
+                value:fields.value ? fields.value : result.dataValues.value,
+                regular_price:fields.regular_price ? fields.regular_price : result.dataValues.regular_price,
+                sale_price:fields.sale_price ? fields.sale_price : result.dataValues.sale_price
+            })
 
             return ({
                 success: true,
                 message: "Attribute updated Successfully",
-                data: updateRes
+                data: updateRes.dataValues
             })
         }
         else {
