@@ -4,11 +4,9 @@ import { config } from 'dotenv';
 config();
 const PORT = process.env.PORT || 8080;
 
-sequelize.sync({ alter: true })
-// sequelize.sync({force:true})
-// sequelize.sync()
+sequelize.sync()
     .then(() => {
-        app.listen(PORT,()=>{
+        app.listen(PORT, () => {
             console.log("Database & tables Synced!");
             console.log(`Server is running on PORT ${PORT}`);
         })
