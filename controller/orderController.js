@@ -1,5 +1,5 @@
 import { errorResponse } from "../config/errorResponse.js";
-import { addNewOrderModel, deleteOrderModel, fetchAllOrderModel, fetchSingleOrderModel, totalOrderCountModel, updateOrderModel } from "../model/model.js";
+import { addNewOrderModel, deleteOrderModel, fetchAllOrderModel, fetchOrderModel, fetchSingleOrderModel, totalOrderCountModel, updateOrderModel } from "../model/model.js";
 
 export const fetchAllOrderController = async (req, res) => {
     try {
@@ -66,8 +66,8 @@ export const totalOrderCountController = async(req,res)=>{
 export const fetchSingleOrderController = async (req, res) => {
     try {
         console.log("Request Body Received in fetchSingleOrderController",req.body);
-        let id = req.params.id;
-        req.body.id = id;
+        let id = req.params.order_id;
+        req.body.order_id = id;
         let result = await fetchSingleOrderModel(req.body);
         console.log("Result--->", result)
         if(result.success){
@@ -132,8 +132,8 @@ export const addNewOrderController = async(req,res)=>{
 export const updateOrderController = async(req,res)=>{
     try {
         console.log("Request body received in updateOrderController --->",req.body);
-        let id = req.params.id;
-        req.body.id = id;
+        let id = req.params.order_id;
+        req.body.order_id = id;
         let response = await updateOrderModel(req.body);
         
         console.log("Update Order Response--->",response);
@@ -167,8 +167,8 @@ export const updateOrderController = async(req,res)=>{
 export const deleteOrderController = async(req,res)=>{
     try {
         console.log("Request body received in deleteOrderController --->",req.body);
-        let id = req.params.id;
-        req.body.id = id
+        let id = req.params.order_id;
+        req.body.order_id = id
         let response = await deleteOrderModel(req.body);
         
         console.log("Delete Order Response--->",response);
@@ -197,4 +197,36 @@ export const deleteOrderController = async(req,res)=>{
             error:errorResponse(1,error.message,error)
         })
     }
+}
+
+export const fetchOrderController = async (req, res) => {
+    try {
+        console.log("Request Body Received in fetchOrderController",req.body);
+        let id = req.params.id;
+        req.body.farmer_id = id;
+        let result = await fetchOrderModel(req.body);
+        console.log("Result--->", result)
+        if(result.success){
+            res.status(200).send({
+                success:true,
+                message:result.message,
+                data:result.data
+            })
+        }
+        else{
+            res.status(200).send({
+                success:false,
+                message:result.message,
+                error:result.error
+            })
+        }
+    } catch (error) {
+        console.log("error occured in fetchOrderController--->", error)
+        res.status(200).send({
+            success:false,
+            message:"Something Went Wrong... Please try again",
+            error:errorResponse(1,error.message,error)
+        })
+    }
+    
 }

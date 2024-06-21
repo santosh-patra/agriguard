@@ -13,15 +13,13 @@ const Orders = sequelize.define('Orders', {
     },
     category_id:{
         type: DataTypes.INTEGER,
-        defaultValue: null,
-        allowNull: true
+        allowNull: false
+    },
+    product_id:{
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     order_id: {
-        type: DataTypes.STRING,
-        defaultValue: null,
-        allowNull: true
-    },
-    name: {
         type: DataTypes.STRING,
         defaultValue: null,
         allowNull: true
@@ -32,6 +30,11 @@ const Orders = sequelize.define('Orders', {
         allowNull: true
     },
     price: {
+        type: DataTypes.STRING,
+        defaultValue: null,
+        allowNull: true
+    },
+    attribute: {
         type: DataTypes.STRING,
         defaultValue: null,
         allowNull: true

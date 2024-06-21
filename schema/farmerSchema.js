@@ -28,8 +28,7 @@ const Farmer = sequelize.define('Farmer', {
     },
     mobile_no: {
         type: DataTypes.STRING,
-        defaultValue: null,
-        allowNull: true
+        allowNull: false
     },
     email_id: {
         type: DataTypes.STRING,

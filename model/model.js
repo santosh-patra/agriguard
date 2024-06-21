@@ -131,11 +131,24 @@ export const fetchAllProductModel = async (fields) => {
         //     attributes: { exclude: ['product_single_image','product_multiple_image'] }
         //   }
         );
+        let allProduct = []
         if (result.length > 0) {
+            result.forEach(res=>{
+                if(res.dataValues.long_description){
+                    res.dataValues.long_description = JSON.parse(res.dataValues.long_description);
+                }
+                if(res.dataValues.prod_attribute){
+                    res.dataValues.prod_attribute = JSON.parse(res.dataValues.prod_attribute);
+                }
+                if(res.dataValues.product_multiple_image){
+                    res.dataValues.product_multiple_image = JSON.parse(res.dataValues.product_multiple_image);
+                }
+                allProduct.push(res.dataValues)
+            })
             return ({
                 success: true,
                 message: "Product Fetch successfully",
-                data: result
+                data: allProduct
             })
         }
         else {
@@ -161,11 +174,14 @@ export const fetchSingleProductModel = async (fields) => {
         let result = await Product.findOne({ where: { id:fields.id } });
         console.log("Fetch Single product result--->",result);
         if (result) {
-            if(result.dataValues.product_single_image){
-                delete result.dataValues.product_single_image;
+            if(result.dataValues.long_description){
+                result.dataValues.long_description = JSON.parse(result.dataValues.long_description);
+            }
+            if(result.dataValues.prod_attribute){
+                result.dataValues.prod_attribute = JSON.parse(result.dataValues.prod_attribute);
             }
             if(result.dataValues.product_multiple_image){
-                delete result.dataValues.product_single_image;
+                result.dataValues.product_multiple_image = JSON.parse(result.dataValues.product_multiple_image);
             }
             return ({
                 success: true,
@@ -465,12 +481,35 @@ export const fetchAllFarmerModel = async (fields) => {
         // let fetchAllFarmerSql = 'Select count(*) as total_farmer from farmers;'
         // let result = await connection.query(fetchAllFarmerSql);
         let result = await Farmer.findAll();
-
-        return ({
-            success: true,
-            message: "Total No. Of farmer ",
-            data: result
-        })
+        console.log("result--->",result)
+        let allFarmer = []
+        if(result){
+            result.forEach(res=>{
+                if(res.dataValues.address){
+                    res.dataValues.address = JSON.parse(res.dataValues.address);
+                }
+                if(res.dataValues.crop_insured){
+                    res.dataValues.crop_insured = JSON.parse(res.dataValues.crop_insured);
+                }
+                if(res.dataValues.farm_details){
+                    res.dataValues.farm_details = JSON.parse(res.dataValues.farm_details);
+                }
+                allFarmer.push(res.dataValues)
+            })
+            
+            return ({
+                success: true,
+                message: "Total No. Of farmer ",
+                data: allFarmer
+            })
+        }
+        else{
+            return ({
+                success: false,
+                message: "No Farmer List found",
+                data: result
+            })
+        }
 
     } catch (error) {
         console.log("error occured in fetchAllFarmerModel--->", error)
@@ -547,6 +586,14 @@ export const addNewFarmerModel = async (fields) => {
     console.log("Data received in fetchAllFarmerModel --->", fields);
 
     try {
+        let singleFarmerResult = await Farmer.findOne({ where: { mobile_no:fields.mobile_no } });
+        if(singleFarmerResult){
+            return ({
+                success: false,
+                message: "Farmer Mobile no. is already registered... Please Login or add another number",
+                error: errorResponse(1, 'Unable to Add Farmer Details', {})
+            })
+        }
         if(fields.address){
             let address = JSON.stringify(fields.address)
             fields.address = address;
@@ -745,15 +792,13 @@ export const totalOrderCountModel = async(fields)=>{
 export const fetchSingleOrderModel = async (fields) => {
     console.log("Data received in fetchSingleOrderModel --->", fields);
     try {
-        // let fetchSingleOrderSql = `Select * from orders where id=${fields.id};`
-        // let result = await connection.query(fetchSingleOrderSql);
-        let result = await Orders.findOne({ where: { id:fields.id } });
+        let result = await Orders.findOne({ where: { order_id:fields.order_id } });
         console.log("Fetch Single ctagory result--->",result);
         if (result) {
             return ({
                 success: true,
                 message: "Order Details fetch Successfully",
-                data: result
+                data: result.dataValues
             })
         }
         else {
@@ -814,12 +859,15 @@ export const updateOrderModel = async (fields) => {
     console.log("Data received in updateOrderModel --->", fields);
 
     try {
-        let existingOrder = await Orders.findByPk(fields.id);
+        let existingOrder = await Orders.findOne({ where: { order_id:fields.order_id } });
         console.log("existingOrder Result--->",existingOrder)
         if(existingOrder){
             let updateObj = {};
-            updateObj.name = fields.name ? fields.name : existingOrder.name
+            updateObj.farmer_id = fields.farmer_id ? fields.farmer_id : existingOrder.farmer_id
+            updateObj.category_id = fields.category_id ? fields.category_id : existingOrder.category_id
+            updateObj.product_id = fields.product_id ? fields.product_id : existingOrder.product_id
             updateObj.qty = fields.qty ? fields.qty : existingOrder.qty
+            updateObj.attribute = fields.attribute ? fields.attribute : existingOrder.attribute
             updateObj.price = fields.price ? fields.price : existingOrder.price
             updateObj.order_status = fields.order_status ? fields.order_status : existingOrder.order_status
             updateObj.date_of_order = fields.date_of_order ? fields.date_of_order : existingOrder.date_of_order
@@ -856,8 +904,7 @@ export const deleteOrderModel = async (fields) => {
     try {
         // check the order is exist or not
         
-        let id = fields.id;
-        let result = await Orders.findOne({ where: { id } });
+        let result = await Orders.findOne({ where: { order_id:fields.order_id } });
         console.log("resultresultresult--->",result)
         if(result){
             let deleteRes = await result.destroy();
@@ -877,6 +924,37 @@ export const deleteOrderModel = async (fields) => {
 
     } catch (error) {
         console.log("error occured in deleteOrderModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const fetchOrderModel = async (fields) => {
+    console.log("Data received in fetchOrderModel --->", fields);
+    try {
+        let result = await Orders.findAll({ where: { farmer_id:fields.farmer_id } });
+        console.log("Fetch Single farmer order result--->",result);
+        if (result) {
+            return ({
+                success: true,
+                message: "Order Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchOrderModel--->", error)
         return ({
             success: false,
             message: "Something Went Wrong... Please try again",

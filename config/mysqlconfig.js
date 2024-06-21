@@ -30,7 +30,8 @@ config();
 
 // const sequelize = new Sequelize(`mydb`, `root`, `admin`, {
 //     host: `localhost`,
-//     dialect: 'mysql'
+//     dialect: 'mysql',
+//     logging: false
 // });
 
 // for cloud connect
