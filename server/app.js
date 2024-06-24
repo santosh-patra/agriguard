@@ -19,10 +19,12 @@ import jwt from 'jsonwebtoken'
 import sequelize from '../config/mysqlconfig.js';
 const SECRET_KEY = 'my-high-level-secret-key';
 
-app.use(express.json());
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// app.use(bodyParser.json({ limit: '50mb' }));
+// app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+// 
 app.use(cors())
 // console.log("dhgcdhc--->",path.join(__dirname,'../controller/qr-images'));
 // console.log("dhgcdhc--->",path.basename(__filename));
