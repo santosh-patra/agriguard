@@ -6,6 +6,9 @@ import Orders from "../schema/orderSchema.js";
 import Product from "../schema/productSchema.js";
 import User from "../schema/loginSchema.js";
 import Attribute from "../schema/attributeSchema.js";
+import SoilTest from "../schema/soilTestSchema.js";
+import CropName from "../schema/cropNameSchema.js";
+import CarbonCredit from "../schema/carbonCreditSchema.js";
 
 
 
@@ -1283,3 +1286,391 @@ export const deleteAttributeModel = async (fields) => {
     }
 }
 
+// soil Test
+export const createSoilTestModel = async (fields) => {
+    console.log("Data received in createSoilTestModel --->", fields);
+
+    try {
+        let result = await SoilTest.create(fields);
+        console.log("create SoilTest result--->",result)
+        if(result.uniqno == 1){
+            return ({
+                success: true,
+                message: "Soil Health Test Record Created Successfully",
+                data: result.dataValues
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Something Went Wrong...Please try again",
+                error: errorResponse(1, 'Unable to Add Attributes Details', result)
+            })
+        }
+    } catch (error) {
+        console.log("error occured in createSoilTestModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const fetchAllSoilTestModel = async (fields) => {
+    console.log("Data received in fetchAllSoilTestModel --->", fields);
+    try {
+        let result = await SoilTest.findAll();
+        if (result.length > 0) {
+            return ({
+                success: true,
+                message: "Soil Test Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchAllSoilTestModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const fetchSingleSoilTestModel = async (fields) => {
+    console.log("Data received in fetchSingleSoilTestModel --->", fields);
+    try {
+        let result = await SoilTest.findOne({ where: { id:fields.id } });
+        console.log("Fetch Single soilTest result--->",result);
+        if (result) {
+            return ({
+                success: true,
+                message: "Soil Test Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchSingleSoilTestModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+
+export const updateSoilTestModel = async (fields) => {
+    console.log("Data received in updateSoilTestModel --->", fields);
+
+    try {
+        let id = fields.id;
+        const result = await SoilTest.findByPk(id);
+        console.log("resultresultresult--->",result)
+        if(result){
+            let updateRes = await result.update({
+                first_name:fields.first_name ? fields.first_name : result.dataValues.first_name, 
+                last_name:fields.last_name ? fields.last_name : result.dataValues.last_name, 
+                address:fields.address ? fields.address : result.dataValues.address,
+                pincode:fields.pincode ? fields.pincode : result.dataValues.pincode,
+                district:fields.district ? fields.district : result.dataValues.district,
+                mobile_no:fields.mobile_no ? fields.mobile_no : result.dataValues.mobile_no,
+                land_size:fields.land_size ? fields.land_size : result.dataValues.land_size,
+                land_type:fields.land_type ? fields.land_type : result.dataValues.land_type,
+                soil_type:fields.soil_type ? fields.soil_type : result.dataValues.soil_type,
+                crop_name:fields.crop_name ? fields.crop_name : result.dataValues.crop_name,
+                testing_status:fields.testing_status ? fields.testing_status : result.dataValues.testing_status,
+            })
+
+            return ({
+                success: true,
+                message: "Soil Test Record updated Successfully",
+                data: updateRes.dataValues
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail !! No Soil Test Record Found",
+                error: errorResponse(1, 'Unable to Update Soil Test Details', result)
+            })
+        }
+
+    } catch (error) {
+        console.log("error occured in updateSoilTestModel Model--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const deleteSoilTestModel = async (fields) => {
+    console.log("Data received in deleteSoilTestModel --->", fields);
+
+    try {
+        // check the record is exist or not
+        let id = fields.id;
+        const result = await SoilTest.findByPk(id);
+        console.log("resultresultresult--->",result)
+        if(result){
+            let deleteRes = await result.destroy();
+            return ({
+                success: true,
+                message: "Soil Test Record Deleted Successfully",
+                data: []
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail !! No Record Found",
+                error: errorResponse(1, 'Unable to delete Soil Test Details', result)
+            })
+        }
+
+    } catch (error) {
+        console.log("error occured in deleteSoilTestModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+// crop name
+export const fetchAllCropNameModel = async (fields) => {
+    console.log("Data received in fetchAllCropNameModel --->", fields);
+    try {
+        let result = await CropName.findAll();
+        if (result.length > 0) {
+            return ({
+                success: true,
+                message: "CropName Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchAllCropNameModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const fetchSingleCropNameModel = async (fields) => {
+    console.log("Data received in fetchSingleCropNameModel --->", fields);
+    try {
+        let result = await CropName.findOne({ where: { id:fields.id } });
+        console.log("Fetch Single CropName result--->",result);
+        if (result) {
+            return ({
+                success: true,
+                message: "CropName Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchSingleCropNameModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const addNewCropNameModel = async (fields) => {
+    console.log("Data received in addNewCropNameModel --->", fields);
+
+    try {
+        let result = await CropName.create(fields);
+        console.log("create CropName result--->",result)
+        if(result.uniqno == 1){
+            return ({
+                success: true,
+                message: "A New CropName has been created Successfully",
+                data: result.dataValues
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Something Went Wrong...Please try again",
+                error: errorResponse(1, 'Unable to Add CropName Details', result)
+            })
+        }
+    } catch (error) {
+        console.log("error occured in addNewCropNameModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const updateCropNameModel = async (fields) => {
+    try {
+        let id = fields.id;
+        const result = await CropName.findByPk(id);
+        console.log("resultresultresult--->",result)
+        if(result){
+            let updateRes = await result.update({name:fields.name})
+
+            return ({
+                success: true,
+                message: "CropName updated Successfully",
+                data: updateRes
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail !! No Record Found",
+                error: errorResponse(1, 'Unable to Update CropName Details', result)
+            })
+        }
+
+    } catch (error) {
+        console.log("error occured in updateCropNameModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const deleteCropNameModel = async (fields) => {
+    try {
+        // check the ctageory is exist or not
+        let id = fields.id;
+        const result = await CropName.findByPk(id);
+        console.log("resultresultresult--->",result)
+        if(result){
+            let deleteRes = await result.destroy();
+            return ({
+                success: true,
+                message: "CropName Deleted Successfully",
+                data: []
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail !! No Record Found",
+                error: errorResponse(1, 'Unable to delete Record Details', result)
+            })
+        }
+
+    } catch (error) {
+        console.log("error occured in deleteCropNameModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+// carbon credit
+export const createCarbonCreditModel = async (fields) => {
+    console.log("Data received in createCarbonCreditModel --->", fields);
+
+    try {
+        let result = await CarbonCredit.create(fields);
+        console.log("create carbon credit result--->",result)
+        if(result.uniqno == 1){
+            return ({
+                success: true,
+                message: "A New Carbon Credit has been created Successfully",
+                data: result.dataValues
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Something Went Wrong...Please try again",
+                error: errorResponse(1, 'Unable to Add carbon credit Details', result)
+            })
+        }
+    } catch (error) {
+        console.log("error occured in createCarbonCreditModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const fetchCarbonCreditModel = async (fields) => {
+    console.log("Data received in fetchCarbonCreditModel --->", fields);
+    try {
+        let result = await CarbonCredit.findAll();
+        if (result.length > 0) {
+            return ({
+                success: true,
+                message: "Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchCarbonCreditModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}

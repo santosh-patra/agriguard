@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import bodyParser from 'body-parser';
 const app = express();
 import { fileURLToPath } from 'url';
 import loginRoutes from '../routes/loginRoutes.js';
@@ -9,6 +10,9 @@ import farmerRoutes from '../routes/farmerRoutes.js'
 import orderRoutes from '../routes/orderRoutes.js'
 import categoryRoutes from '../routes/categoryRoutes.js'
 import attributeRoutes from '../routes/attributeRoutes.js'
+import soilTestRoutes from '../routes/soilTestRoutes.js'
+import cropNameRoutes from '../routes/cropNameRoutes.js'
+import othersRoutes from '../routes/carbonCreditRoutes.js'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import jwt from 'jsonwebtoken'
@@ -16,6 +20,9 @@ import sequelize from '../config/mysqlconfig.js';
 const SECRET_KEY = 'my-high-level-secret-key';
 
 app.use(express.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+
 app.use(cors())
 // console.log("dhgcdhc--->",path.join(__dirname,'../controller/qr-images'));
 // console.log("dhgcdhc--->",path.basename(__filename));
@@ -31,6 +38,13 @@ app.use('/v1/order', orderRoutes)
 app.use('/v1/category', categoryRoutes)
 // attribute
 app.use('/v1/attribute', attributeRoutes)
+// soil test
+app.use('/v1/soil-test', soilTestRoutes)
+// crop name
+app.use('/v1/crop-name', cropNameRoutes)
+// others routes
+app.use('/v1/others', othersRoutes)
+
 
 app.get('/', (req, res) => {
   res.status(200).send({
