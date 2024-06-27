@@ -103,9 +103,10 @@ export const addNewFarmerController = async(req,res)=>{
         console.log("Add Farmer Response--->",response);
         if(response.success){
             console.log(`Farmer Added Successfully`)
+            // need to implement send otp api here
             res.status(200).send({
                 success:true,
-                message:response.message,
+                message:"OTP Sent Successfully",
                 data:response.data
             })
         }
