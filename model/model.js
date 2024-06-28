@@ -745,7 +745,14 @@ export const fetchAllOrderModel = async (fields) => {
         // let fetchAllOrderSql = 'Select * from orders;'
         // let result = await connection.query(fetchAllOrderSql);
         let result = await Orders.findAll();
+        let allOrder = []
         if (result.length > 0) {
+            result.forEach(res=>{
+                if(res.dataValues.address){
+                    res.dataValues.address = JSON.parse(res.dataValues.address);
+                }
+                allOrder.push(res.dataValues)
+            })
             return ({
                 success: true,
                 message: "Order Details fetch Successfully",
@@ -798,6 +805,10 @@ export const fetchSingleOrderModel = async (fields) => {
         let result = await Orders.findOne({ where: { order_id:fields.order_id } });
         console.log("Fetch Single ctagory result--->",result);
         if (result) {
+            if(result.dataValues.address){
+                let address = JSON.parse(result.dataValues.address)
+                result.dataValues.address = address;
+            }
             return ({
                 success: true,
                 message: "Order Details fetch Successfully",
@@ -831,9 +842,17 @@ export const addNewOrderModel = async (fields) => {
         // VALUES ('${fields.name}','${fields.qty}', '${fields.price}', '${fields.order_status}','${fields.date_of_order}','${fields.payment_status}');`;
         // console.log("Add Order SQL Query--->", addOrderSql);
         // let result = await connection.query(addOrderSql);
+        if(fields.address){
+            let address = JSON.stringify(fields.address)
+            fields.address = address;
+        }
         let result = await Orders.create(fields);
         console.log("create Orders result--->",result)
         if(result.uniqno == 1){
+            if(result.dataValues.address){
+                let address = JSON.parse(result.dataValues.address)
+                result.dataValues.address = address;
+            }
             return ({
                 success: true,
                 message: "A New Order has been generated",
@@ -867,16 +886,24 @@ export const updateOrderModel = async (fields) => {
         if(existingOrder){
             let updateObj = {};
             updateObj.farmer_id = fields.farmer_id ? fields.farmer_id : existingOrder.farmer_id
+            updateObj.farmer_name = fields.farmer_name ? fields.farmer_name : existingOrder.farmer_name
             updateObj.category_id = fields.category_id ? fields.category_id : existingOrder.category_id
             updateObj.product_id = fields.product_id ? fields.product_id : existingOrder.product_id
+            updateObj.product_name = fields.product_name ? fields.product_name : existingOrder.product_name
             updateObj.qty = fields.qty ? fields.qty : existingOrder.qty
+            updateObj.address = fields.address ? JSON.stringify(fields.address) : existingOrder.address
             updateObj.attribute = fields.attribute ? fields.attribute : existingOrder.attribute
             updateObj.price = fields.price ? fields.price : existingOrder.price
             updateObj.order_status = fields.order_status ? fields.order_status : existingOrder.order_status
             updateObj.date_of_order = fields.date_of_order ? fields.date_of_order : existingOrder.date_of_order
             updateObj.payment_status = fields.payment_status ? fields.payment_status : existingOrder.payment_status
+            updateObj.decline_reason = fields.decline_reason ? fields.decline_reason : existingOrder.decline_reason
             
             let updateRes = await existingOrder.update(updateObj);
+            if(updateRes.dataValues.address){
+                let address = JSON.parse(updateRes.dataValues.address)
+                updateRes.dataValues.address = address;
+            }
             return ({
                 success: true,
                 message: "Order updated Successfully",

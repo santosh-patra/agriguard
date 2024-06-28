@@ -11,13 +11,25 @@ const Orders = sequelize.define('Orders', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    farmer_name: {
+        type: DataTypes.STRING,
+        defaultValue: null,
+        allowNull: true
+    },
     category_id:{
         type: DataTypes.INTEGER,
-        allowNull: false
+        defaultValue: 0,
+        allowNull: true
     },
     product_id:{
         type: DataTypes.INTEGER,
-        allowNull: false
+        defaultValue: 0,
+        allowNull: true
+    },
+    product_name: {
+        type: DataTypes.STRING,
+        defaultValue: null,
+        allowNull: true
     },
     order_id: {
         type: DataTypes.STRING,
@@ -26,6 +38,11 @@ const Orders = sequelize.define('Orders', {
     },
     qty: {
         type: DataTypes.STRING,
+        defaultValue: null,
+        allowNull: true
+    },
+    address: {
+        type: DataTypes.TEXT('long'),
         defaultValue: null,
         allowNull: true
     },
@@ -49,6 +66,11 @@ const Orders = sequelize.define('Orders', {
         allowNull: true
     },
     payment_status: {
+        type: DataTypes.STRING,
+        defaultValue: null,
+        allowNull: true
+    },
+    decline_reason: {
         type: DataTypes.STRING,
         defaultValue: null,
         allowNull: true
