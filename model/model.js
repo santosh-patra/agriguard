@@ -1377,8 +1377,8 @@ export const fetchAllSoilTestModel = async (fields) => {
 export const fetchSingleSoilTestModel = async (fields) => {
     console.log("Data received in fetchSingleSoilTestModel --->", fields);
     try {
-        let result = await SoilTest.findOne({ where: { id:fields.id } });
-        console.log("Fetch Single soilTest result--->",result);
+        let result = await SoilTest.findAll({ where: { farmer_id:fields.id } });
+        console.log("Fetch Single soilTest result by fsrmer Id--->",result);
         if (result) {
             return ({
                 success: true,
@@ -1416,6 +1416,7 @@ export const updateSoilTestModel = async (fields) => {
         if(result){
             let updateRes = await result.update({
                 first_name:fields.first_name ? fields.first_name : result.dataValues.first_name, 
+                farmer_id:fields.farmer_id ? fields.farmer_id : result.dataValues.farmer_id, 
                 last_name:fields.last_name ? fields.last_name : result.dataValues.last_name, 
                 address:fields.address ? fields.address : result.dataValues.address,
                 pincode:fields.pincode ? fields.pincode : result.dataValues.pincode,
