@@ -12,6 +12,7 @@ import categoryRoutes from '../routes/categoryRoutes.js'
 import attributeRoutes from '../routes/attributeRoutes.js'
 import soilTestRoutes from '../routes/soilTestRoutes.js'
 import cropNameRoutes from '../routes/cropNameRoutes.js'
+import blogRoutes from '../routes/blogRoutes.js'
 import othersRoutes from '../routes/carbonCreditRoutes.js'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,6 +45,8 @@ app.use('/v1/attribute', attributeRoutes)
 app.use('/v1/soil-test', soilTestRoutes)
 // crop name
 app.use('/v1/crop-name', cropNameRoutes)
+// blogs routes
+app.use('/v1/blog', blogRoutes)
 // others routes
 app.use('/v1/others', othersRoutes)
 

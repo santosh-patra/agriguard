@@ -9,6 +9,7 @@ import Attribute from "../schema/attributeSchema.js";
 import SoilTest from "../schema/soilTestSchema.js";
 import CropName from "../schema/cropNameSchema.js";
 import CarbonCredit from "../schema/carbonCreditSchema.js";
+import Blog from "../schema/blogSchema.js";
 
 
 
@@ -1695,6 +1696,198 @@ export const fetchCarbonCreditModel = async (fields) => {
 
     } catch (error) {
         console.log("error occured in fetchCarbonCreditModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+// blog
+export const fetchAllBlogModel = async (fields) => {
+    console.log("Data received in fetchAllBlogModel --->", fields);
+    try {
+        let result = await Blog.findAll();
+        let allBlogs = []
+        if (result.length > 0) {
+            result.forEach(res=>{
+                if(res.dataValues.tags){
+                    res.dataValues.tags = JSON.parse(res.dataValues.tags);
+                }
+                allBlogs.push(res.dataValues)
+            })
+            return ({
+                success: true,
+                message: "Blogs Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchAllBlogModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const fetchSingleBlogModel = async (fields) => {
+    console.log("Data received in fetchSingleBlogModel --->", fields);
+    try {
+        // let fetchSingleBlogSql = `Select * from categories where id=${fields.id};`
+        let result = await Blog.findOne({ where: { id:fields.id } });
+        console.log("Fetch Single Blogs result--->",result);
+        if (result) {
+            if(result.dataValues.tags){
+                let tags = JSON.parse(result.dataValues.tags)
+                result.dataValues.tags = tags;
+            }
+            return ({
+                success: true,
+                message: "Blogs Details fetch Successfully",
+                data: result
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+
+
+    } catch (error) {
+        console.log("error occured in fetchAllBlogsModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const addNewBlogModel = async (fields) => {
+    console.log("Data received in addNewBlogModel --->", fields);
+
+    try {
+        if(fields.tags){
+            let tags = JSON.stringify(fields.tags)
+            fields.tags = tags;
+        }
+        let result = await Blog.create(fields);
+        console.log("create Blog result--->",result)
+        if(result.uniqno == 1){
+            if(result.dataValues.tags){
+                let tags = JSON.parse(result.dataValues.tags)
+                result.dataValues.tags = tags;
+            }
+            return ({
+                success: true,
+                message: "A New Blog has been Added",
+                data: result.dataValues
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Something Went Wrong...Please try again",
+                error: errorResponse(1, 'Unable to Add Blogs Details', result)
+            })
+        }
+    } catch (error) {
+        console.log("error occured in addNewBlog Model--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const updateBlogModel = async (fields) => {
+    try {
+        let id = fields.id;
+        const result = await Blog.findByPk(id);
+        console.log("resultresultresult--->",result)
+        if(result){
+            if(fields.tags){
+                let tags = JSON.stringify(fields.tags)
+                fields.tags = tags;
+            }
+            let updateRes = await result.update({
+                blog_title:fields.blog_title ? fields.blog_title : result.dataValues.blog_title, 
+                blog_content:fields.blog_content ? fields.blog_content : result.dataValues.blog_content,
+                blog_image:fields.blog_image ? fields.blog_image : result.dataValues.blog_image,
+                video_url:fields.video_url ? fields.video_url : result.dataValues.video_url,
+                video_thumbnail:fields.video_thumbnail ? fields.video_thumbnail : result.dataValues.video_thumbnail,
+                category:fields.category ? fields.category : result.dataValues.category,
+                tags:fields.tags ? fields.tags : result.dataValues.tags,
+            })
+            if(updateRes.dataValues.tags){
+                let tags = JSON.parse(updateRes.dataValues.tags)
+                updateRes.dataValues.tags = tags;
+            }
+
+            return ({
+                success: true,
+                message: "Blog updated Successfully",
+                data: updateRes.dataValues
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail !! No Blog Found",
+                error: errorResponse(1, 'Unable to Update Blog Details', result)
+            })
+        }
+
+    } catch (error) {
+        console.log("error occured in updateBlog Model--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const deleteBlogModel = async (fields) => {
+    try {
+        // check the ctageory is exist or not
+        let id = fields.id;
+        const result = await Blog.findByPk(id);
+        console.log("resultresultresult--->",result)
+        if(result){
+            let deleteRes = await result.destroy();
+            return ({
+                success: true,
+                message: "Blog Deleted Successfully",
+                data: []
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail !! No Blog Found",
+                error: errorResponse(1, 'Unable to delete Blog Details', result)
+            })
+        }
+
+    } catch (error) {
+        console.log("error occured in deleteBlogModel--->", error)
         return ({
             success: false,
             message: "Something Went Wrong... Please try again",
