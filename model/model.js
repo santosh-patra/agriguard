@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { errorResponse } from "../config/errorResponse.js";
 import Category from "../schema/categorySchema.js";
 import Farmer from "../schema/farmerSchema.js";
@@ -743,8 +743,6 @@ export const fetchAllOrderModel = async (fields) => {
     console.log("Data received in fetchAllOrderModel --->", fields);
 
     try {
-        // let fetchAllOrderSql = 'Select * from orders;'
-        // let result = await connection.query(fetchAllOrderSql);
         let result = await Orders.findAll();
         let allOrder = []
         if (result.length > 0) {
@@ -930,7 +928,6 @@ export const updateOrderModel = async (fields) => {
     }
 }
 
-
 export const deleteOrderModel = async (fields) => {
     try {
         // check the order is exist or not
@@ -986,6 +983,56 @@ export const fetchOrderModel = async (fields) => {
 
     } catch (error) {
         console.log("error occured in fetchOrderModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+
+export const fetchOrderReportModel = async (fields) => {
+    console.log("Data received in fetchOrderReportModel --->", fields);
+    try {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        const date = today.getDate();
+        let startDate = fields.startDate ? new Date(fields.startDate) : new Date(`${year}-${month}-${date}`);
+        startDate.setHours(0, 0, 0, 0);
+        let endDate = fields.endDate ? new Date(fields.endDate) : new Date(`${year}-${month}-${date}`);
+        endDate.setHours(23, 59, 59, 999);
+        let result = await Orders.findAll({
+            where: {
+              createdAt: {
+                [Op.between]: [`${startDate}`, `${endDate}`]
+              }
+            }
+          });
+        console.log("fetch Order Report result--->",result);
+        let allOrder = [];
+        if (result) {
+            result.forEach(res=>{
+                if(res.dataValues.address){
+                    res.dataValues.address = JSON.parse(res.dataValues.address);
+                }
+                allOrder.push(res.dataValues)
+            })
+            return ({
+                success: true,
+                message: "Order Report Fetch Successfully",
+                data: allOrder
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: allOrder
+            })
+        }
+    } catch (error) {
+        console.log("error occured in fetchOrderReportModel--->", error)
         return ({
             success: false,
             message: "Something Went Wrong... Please try again",

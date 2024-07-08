@@ -1,5 +1,5 @@
 import { errorResponse } from "../config/errorResponse.js";
-import { addNewOrderModel, deleteOrderModel, fetchAllOrderModel, fetchOrderModel, fetchSingleOrderModel, totalOrderCountModel, updateOrderModel } from "../model/model.js";
+import { addNewOrderModel, deleteOrderModel, fetchAllOrderModel, fetchOrderModel, fetchOrderReportModel, fetchSingleOrderModel, totalOrderCountModel, updateOrderModel } from "../model/model.js";
 
 export const fetchAllOrderController = async (req, res) => {
     try {
@@ -222,6 +222,37 @@ export const fetchOrderController = async (req, res) => {
         }
     } catch (error) {
         console.log("error occured in fetchOrderController--->", error)
+        res.status(200).send({
+            success:false,
+            message:"Something Went Wrong... Please try again",
+            error:errorResponse(1,error.message,error)
+        })
+    }
+    
+}
+
+export const getReportController = async (req, res) => {
+    try {
+        console.log("Request Body Received in getReportController",req.body);
+
+        let result = await fetchOrderReportModel(req.body);
+        console.log("Result--->", result)
+        if(result.success){
+            res.status(200).send({
+                success:true,
+                message:result.message,
+                data:result.data
+            })
+        }
+        else{
+            res.status(200).send({
+                success:false,
+                message:result.message,
+                error:result.error
+            })
+        }
+    } catch (error) {
+        console.log("error occured in getReportController--->", error)
         res.status(200).send({
             success:false,
             message:"Something Went Wrong... Please try again",

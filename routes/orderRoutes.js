@@ -2,7 +2,7 @@ import express from 'express';
 import crypto from 'crypto'
 const router = express.Router();
 import multer from 'multer'
-import { addNewOrderController, deleteOrderController, fetchAllOrderController, fetchOrderController, fetchSingleOrderController, totalOrderCountController, updateOrderController } from '../controller/orderController.js';
+import { addNewOrderController, deleteOrderController, fetchAllOrderController, fetchOrderController, fetchSingleOrderController, getReportController, totalOrderCountController, updateOrderController } from '../controller/orderController.js';
 import { requireSignin } from '../middleware/middleware.js';
 
 
@@ -22,6 +22,9 @@ router.delete('/delete/:order_id',requireSignin,deleteOrderController)
 
 // fetch order by farmer_id
 router.get('/order-by-farmer/:id',requireSignin,fetchOrderController)
+
+// daily sales report by admin
+router.post('/get-report',requireSignin,getReportController)
 
 
 
