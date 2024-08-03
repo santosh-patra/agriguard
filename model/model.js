@@ -1475,6 +1475,7 @@ export const updateSoilTestModel = async (fields) => {
                 soil_type:fields.soil_type ? fields.soil_type : result.dataValues.soil_type,
                 crop_name:fields.crop_name ? fields.crop_name : result.dataValues.crop_name,
                 testing_status:fields.testing_status ? fields.testing_status : result.dataValues.testing_status,
+                report_pdf :fields.report_pdf ? fields.report_pdf : result.dataValues.report_pdf,
             })
 
             return ({

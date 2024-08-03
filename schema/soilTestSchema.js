@@ -65,6 +65,11 @@ const SoilTest = sequelize.define('SoilTest', {
         defaultValue:null,
         allowNull: true
     },
+    report_pdf: {
+        type: DataTypes.TEXT('long'),
+        defaultValue: null,
+        allowNull: true
+    },
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
