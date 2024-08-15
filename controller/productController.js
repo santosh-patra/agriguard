@@ -105,11 +105,20 @@ export const addNewProductController = async(req,res)=>{
         }
         else{
             console.log("Some DB Error occured in addNewProductController--->",response)
-            res.status(200).send({
-                success:false,
-                message:response.message,
-                error:response.error
-            })
+            if(response.error.additionalDetails.errors[0]){
+                res.status(200).send({
+                    success:false,
+                    message:response.error.additionalDetails.errors[0].message,
+                    error:[]
+                })
+            }
+            else{
+                res.status(200).send({
+                    success:false,
+                    message:response.message,
+                    error:response.error
+                })
+            }
         }
         
     } catch (error) {

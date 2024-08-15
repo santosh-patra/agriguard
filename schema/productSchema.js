@@ -34,8 +34,13 @@ const Product = sequelize.define('Product', {
     },
     sku_code: {
         type: DataTypes.STRING,
-        defaultValue: null,
-        allowNull: true
+        allowNull: false,
+        unique: true,
+        validate: {
+            notEmpty: {
+                msg: 'SKU code cannot be an empty string'
+            }
+        }
     },
     stock_status: {
         type: DataTypes.STRING,
