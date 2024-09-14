@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes,Op } from 'sequelize';
 import sequelize from '../config/mysqlconfig.js';
 const User = sequelize.define('User', {
     id: {
@@ -12,9 +12,13 @@ const User = sequelize.define('User', {
         allowNull: true
     },
     category: {
+        type: DataTypes.ENUM('partner', 'fpo'),
+        allowNull: false
+    },
+    user_id:{
         type: DataTypes.STRING,
-        defaultValue: null,
-        allowNull: true
+        allowNull: true,
+        unique: true
     },
     mobile_no: {
         type: DataTypes.STRING,
@@ -55,7 +59,27 @@ const User = sequelize.define('User', {
         allowNull: false
     }
 }, {
-    timestamps: true  // This is the default setting, so you can omit it if not overriding
+    timestamps: true,  // This is the default setting, so you can omit it if not overriding
+    hooks: {
+        beforeCreate: async (user, options) => {
+            // Determine the prefix based on the category
+            const prefix = user.category === 'fpo' ? 'FPO' : 'PTR';
+
+            // Get the last user with the same prefix
+            const lastUser = await User.findOne({
+                where: {
+                    user_id: {
+                        [Op.like]: `${prefix}%`
+                    }
+                },
+                order: [['id', 'DESC']]
+            });
+
+            // Extract the numeric part of the last user_id and increment it
+            const lastNumber = lastUser ? parseInt(lastUser.user_id.slice(3), 10) : 99;
+            user.user_id = `${prefix}${lastNumber + 1}`;
+        }
+    }
 });
 
 export default User;

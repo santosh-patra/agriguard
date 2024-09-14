@@ -1,5 +1,5 @@
 import { errorResponse } from "../config/errorResponse.js";
-import { createUserModel, loginModel, sendOtpModel } from "../model/model.js";
+import { createUserModel, fetchAllFpoModel, fetchFarmerByFpoModel, fetchSingleFpoModel, loginModel, sendOtpModel } from "../model/model.js";
 import jwt from 'jsonwebtoken';
 const SECRET_KEY = 'my-high-level-secret-key';
 
@@ -144,6 +144,97 @@ export const createUserController = async (req, res) => {
         }
     } catch (error) {
         console.log("error occured in createUserController--->", error)
+        res.status(200).send({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+
+}
+
+export const fetchFarmerByFpoController = async (req, res) => {
+    try {
+        console.log("Request Body Received in fetchFarmerByFpoController");
+        req.body.code = req.params.code;
+        let result = await fetchFarmerByFpoModel(req.body);
+        console.log("Result--->", result)
+        if (result.success) {
+            res.status(200).send({
+                success: true,
+                message: result.message,
+                data: result.data
+            })
+        }
+        else {
+            res.status(200).send({
+                success: false,
+                message: result.message,
+                error: result.error
+            })
+        }
+    } catch (error) {
+        console.log("error occured in fetchFarmerByFpoController--->", error)
+        res.status(200).send({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+
+}
+export const fetchSingleFpoController = async (req, res) => {
+    try {
+        console.log("Request Body Received in fetchSingleFpoController");
+        req.body.code = req.params.code;
+        let result = await fetchSingleFpoModel(req.body);
+        console.log("Result--->", result)
+        if (result.success) {
+            res.status(200).send({
+                success: true,
+                message: result.message,
+                data: result.data
+            })
+        }
+        else {
+            res.status(200).send({
+                success: false,
+                message: result.message,
+                error: result.error
+            })
+        }
+    } catch (error) {
+        console.log("error occured in fetchSingleFpoController--->", error)
+        res.status(200).send({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+
+}
+export const fetchAllFpoController = async (req, res) => {
+    try {
+        console.log("Request Body Received in fetchAllFpoController");
+        let result = await fetchAllFpoModel(req.body);
+        console.log("Result--->", result)
+        if (result.success) {
+            res.status(200).send({
+                success: true,
+                message: result.message,
+                totalFPO:result.totalFPO,
+                data: result.data
+            })
+        }
+        else {
+            res.status(200).send({
+                success: false,
+                message: result.message,
+                error: result.error
+            })
+        }
+    } catch (error) {
+        console.log("error occured in fetchAllFpoController--->", error)
         res.status(200).send({
             success: false,
             message: "Something Went Wrong... Please try again",

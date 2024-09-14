@@ -122,7 +122,124 @@ export const createUserModel = async (fields) => {
     }
 }
 
+export const fetchFarmerByFpoModel = async (fields) => {
+    console.log("Data received in fetchFarmerByFpoModel --->", fields);
 
+    try {
+        const result = await Farmer.findAll();
+        // console.log("All Farmer Details--->",result)
+        let allFarmer = []
+        if (result.length > 0) {
+            result.forEach(res=>{
+                // console.log("Res",res.dataValues.farm_details)
+                if(res.dataValues.farm_details){
+                    res.dataValues.farm_details = JSON.parse(res.dataValues.farm_details)
+                    res.dataValues.farm_details.forEach(val=>{
+                        if(val.fpo_code == fields.code){
+                            res.dataValues.address = JSON.parse(res.dataValues.address)
+                            res.dataValues.crop_insured = JSON.parse(res.dataValues.crop_insured)
+                            allFarmer.push(res)
+                        }
+                    })
+                }
+            })
+            return ({
+                success: true,
+                message: "Farmer Details Fetch successfully",
+                data: allFarmer
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+    } catch (error) {
+        console.log("error occured in fetchFarmerByFpoModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+export const fetchSingleFpoModel = async (fields) => {
+    console.log("Data received in fetchSingleFpoModel --->", fields);
+
+    try {
+        const result = await User.findOne({ where: { user_id: fields.code, category: 'fpo' } });
+        console.log("result--->",result)
+        if (result) {
+            delete result.dataValues.id
+            delete result.dataValues.category
+            delete result.dataValues.mobile_no
+            delete result.dataValues.email_id
+            delete result.dataValues.password
+            delete result.dataValues.acc_status
+            return ({
+                success: true,
+                message: "FPO Details Fetch successfully",
+                data: result.dataValues
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+    } catch (error) {
+        console.log("error occured in fetchSingleFpoModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
+export const fetchAllFpoModel = async (fields) => {
+    console.log("Data received in fetchSingleFpoModel --->", fields);
+
+    try {
+        const result = await User.findAll({ where: { category: 'fpo' } });
+        console.log("result--->",result)
+        let allFPO = []
+        if (result.length > 0) {
+            result.forEach(res=>{
+                delete res.dataValues.id
+                delete res.dataValues.category
+                delete res.dataValues.mobile_no
+                delete res.dataValues.email_id
+                delete res.dataValues.password
+                delete res.dataValues.acc_status
+                allFPO.push(res.dataValues)
+            })
+            return ({
+                success: true,
+                message: "All FPO Details Fetch successfully",
+                totalFPO:result.length,
+                data: allFPO
+            })
+        }
+        else {
+            return ({
+                success: false,
+                message: "Fail ! No Record Found",
+                error: result
+            })
+        }
+    } catch (error) {
+        console.log("error occured in fetchSingleFpoModel--->", error)
+        return ({
+            success: false,
+            message: "Something Went Wrong... Please try again",
+            error: errorResponse(1, error.message, error)
+        })
+    }
+}
 
 
 // product model
@@ -663,7 +780,7 @@ export const updateFarmerModel = async (fields) => {
             updateObj.middle_name = fields.middle_name ? fields.middle_name : existingFarmer.middle_name
             updateObj.mobile_no = fields.mobile_no ? fields.mobile_no : existingFarmer.mobile_no
             updateObj.email_id = fields.email_id ? fields.email_id : existingFarmer.email_id
-            updateObj.photo = fields.photo ? JSON.stringify(fields.photo) : existingFarmer.photo
+            updateObj.photo = fields.photo ? (fields.photo) : existingFarmer.photo
             updateObj.age = fields.age ? fields.age : existingFarmer.age
             updateObj.gender = fields.gender ? fields.gender : existingFarmer.gender
             updateObj.address = fields.address ? JSON.stringify(fields.address) : existingFarmer.address
